@@ -1,6 +1,6 @@
 ---
 title: "Activity 5"
-author: "Name"
+author: "Abby"
 output: github_document
 ---
 
@@ -26,7 +26,7 @@ Compare this code output to the `load_data` chunk in your knitted Activity 4 `.m
 What does enclosing an assignment code (i.e., `object_name <- r_code`) in parentheses do?
 
 **Response**:
-
+It allows for other views of the data...
 
 ### Data Codebook
 
@@ -79,7 +79,10 @@ There are a number of ways to create a code chunk:
 Below, create a code chunk and name it `median_earnings`.
 Make sure there is an empty line above and below the code chunk.
 
-
+```{r median_earnings, message = FALSE}
+college_recent_grads %>%
+  summarise(median(median))
+```
 
 In your newly created R code chunk, verify that the median income for all majors was $36,000.
 Using the `college_recent_grads` dataset and functions from `{dplyr}`, verify the *median* summary statistic for the variable median earnings of full-time, year-round workers (`median`).
@@ -95,13 +98,24 @@ Be careful when you name your output summaries as we are dealing with things tha
 When I and obtaining numerical summaries for variables, I like to include the variable name in my summary name (e.g., `mean_med_earnings = mean(median)`).
 Create a code chunk and name it `summary_earnings`.
 
+```{r summary_earnings, message = FALSE}
+college_recent_grads %>%
+  summarise(
+    observations = n(),
+    mean_earnings = mean(median),
+    stdev = sd(median),
+    minimum_earnings = min(median),
+    median_earnings = median(median),
+    maximum_earnings = max(median)
+  )
 
+```
 
 Provide a discussion on what you believe the distribution of median earnings will look like.
 You should discuss the center, spread, and potential shape only using these values - I do NOT want to see any data visualizations here.
 
 **Response**:
-
+The distribution of the curve will be right skewed with the many of the observations holding smaller salary values
 
 ### Median Earnings by Major Category
 
@@ -110,13 +124,29 @@ Using the `college_recent_grads` dataset and functions from `{dplyr}`, obtain si
 *Arrange* this summary table by the median earning.
 Create a code chunk and name it `major_earnings`.
 
+```{r major_earnings, message = FALSE}
+college_recent_grads %>%
+   group_by(major_category)%>%
+   summarise(
+    observations = n(),
+    mean_earnings = mean(median),
+    stdev = sd(median),
+    minimum_earnings = min(median),
+    median_earnings = median(median),
+    maximum_earnings = max(median)
+   )%>%
+    arrange(desc(median_earnings))%>%
+  knitr::kable()
+ 
+  
+```
 
 
 Provide a discussion on how each major compares to the overall distribution.
 You should discuss the center, spread, and potential shape only using these summary values - I do NOT want to see any data visualizations here.
 
 **Response**:
-
+All of the median earnings are fairly close in value (between 30-60K) so you may actually see close to a normal distribution, maybe with a slight right skew. The means to do vary much from the median earnings. 
 
 Before we continue, add the following to the end of your pipeline (you will need to pipe first) in your `major_earnings` code chunk:
 
@@ -129,7 +159,7 @@ What changes about the output?
 When would this `knitr::kable` code be useful?
 
 **Response**:
-
+It changes the output from raw text to a prettier table display.
 
 ![](README-img/noun_pause.png) **Planned Pause Point**: If you have any questions, contact your instructor. Otherwise feel free to continue on.
 
@@ -139,11 +169,19 @@ Let us see how well your descriptions in the [Median Earnings by Major Category]
 Plot the distribution of the variable `median` earnings of full-time, year-round workers for each `major_category` using the *boxplot* and *jitter* geometries.
 Create a code chunk and name it `major_boxplot`.
 
+```{r major_boxplot, message = FALSE}
+library(ggplot2)
+ggplot(data = college_recent_grads, mapping = aes(x=median, y=major_category)) +
+         geom_boxplot() + geom_jitter(aes(color = major_category))
+
+```
+
 
 
 Provide a discussion on how your descriptions in the Median Earnings by Major Category section compares.
 
 **Response**:
+I made my description about median earnings overall by mistake, not about the distributions for individual major_categories so it's not relevant to this chart. It's interesting the outliers for engineering though. 
 
 
 ### Multiple Rankings
